@@ -1,0 +1,47 @@
+- name: install nginx
+  apt:
+    name: nginx
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: drop reverse proxy config
+  copy:
+    dest: /etc/nginx/sites-available/nas-portal.conf
+    content: |
+      server {
+        listen 80;
+        server_name nas.local;
+
+        return 301 https://$host$request_uri;
+      }
+
+      server {
+        listen 443 ssl http2;
+        server_name nas.local;
+
+        ssl_certificate /etc/nginx/certs/nas.crt;
+        ssl_certificate_key /etc/nginx/certs/nas.key;
+
+        add_header Strict-Transport-Security "max-age=31536000" always;
+
+        location / {
+          proxy_pass http://127.0.0.1:8080;
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
+        location /plex/ {
+          proxy_pass http://truenas-media:32400/;
+        }
+      }
+
+- name: enable site
+  file:
+    src: /etc/nginx/sites-available/nas-portal.conf
+    dest: /etc/nginx/sites-enabled/nas-portal.conf
+    state: link
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded

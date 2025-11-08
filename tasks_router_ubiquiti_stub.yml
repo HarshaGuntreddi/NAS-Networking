@@ -1,0 +1,11 @@
+# placeholder for ubiquiti / router config via ssh/api
+# document vlans, poe, mgmt
+
+- name: note ubiquiti config expectations
+  debug:
+    msg: |
+      configure on router:
+        - vlans: 10-mgmt, 20-lan, 30-media, 40-guests
+        - poe for aps/cameras
+        - firewall rules: restrict mgmt, allow media, guest isolation
+        - static routes to truenas + web host

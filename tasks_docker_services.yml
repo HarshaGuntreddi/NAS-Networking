@@ -1,0 +1,24 @@
+- name: install docker deps
+  apt:
+    name:
+      - docker.io
+      - docker-compose-plugin
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: create app folder
+  file:
+    path: /opt/nas-stack
+    state: directory
+
+- name: push compose file
+  copy:
+    dest: /opt/nas-stack/docker-compose.yml
+    content: "{{ lookup('file', 'docker-compose.yml') }}"
+
+- name: up stack
+  shell: |
+    cd /opt/nas-stack
+    docker compose up -d
+  args:
+    warn: false

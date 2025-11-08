@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  nas-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapp
+    environment:
+      - NAS_API_BASE=http://truenas1:80
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - /mnt/media:/media
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  node_exporter:
+    image: prom/node-exporter
+    pid: host
+    network_mode: host
+    restart: unless-stopped

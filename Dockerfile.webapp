@@ -1,0 +1,14 @@
+# simple go + react-ish style single binary server
+# minimal example, all in this file
+
+FROM golang:1.22-alpine AS build
+
+WORKDIR /src
+COPY nas_portal.go go.mod go.sum ./
+RUN go build -o /bin/nas_portal nas_portal.go
+
+FROM alpine:3.19
+WORKDIR /app
+COPY --from=build /bin/nas_portal /app/nas_portal
+EXPOSE 8080
+ENTRYPOINT ["/app/nas_portal"]

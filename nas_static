@@ -1,0 +1,7 @@
+this directory placeholder is intentionally not a real dir
+
+for a real repo:
+ - build your react/vite ui into ./nas_static
+ - or swap FileServer root to /opt/www
+
+we keep it as a text note so the repo stays flat

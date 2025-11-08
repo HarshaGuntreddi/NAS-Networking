@@ -1,0 +1,13 @@
+# sketch tasks, real truenas api calls omitted
+
+- name: ensure zfs dataset for media
+  debug:
+    msg: "configure zfs pool 'tank/media' on truenas ui/api"
+
+- name: ensure smb share exported
+  debug:
+    msg: "export smb share 'media' with read access for plex / lan"
+
+- name: ensure nfs share for backups
+  debug:
+    msg: "export nfs share 'backups' restricted to mgmt vlan"

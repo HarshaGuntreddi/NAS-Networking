@@ -1,0 +1,18 @@
+# nas-networking bootstrap
+# run: ansible-playbook -i inventory.ini site.yml
+
+- hosts: router
+  become: yes
+  tasks:
+    - import_tasks: tasks_router_ubiquiti_stub.yml
+
+- hosts: truenas
+  become: yes
+  tasks:
+    - import_tasks: tasks_truenas_core_stub.yml
+
+- hosts: web
+  become: yes
+  tasks:
+    - import_tasks: tasks_web_reverse_proxy.yml
+    - import_tasks: tasks_docker_services.yml
